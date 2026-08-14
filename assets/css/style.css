@@ -57,6 +57,8 @@ body {
     background: var(--white);
     overflow-x: hidden;
     overflow-x: clip;
+    position: relative;
+    max-width: 100%;
     -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; display: block; border: 0; }
@@ -141,6 +143,7 @@ button { font-family: inherit; cursor: pointer; }
    ========================================================================== */
 .site-header {
     position: sticky; top: 0; z-index: 900; background: rgba(255,255,255,.94);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
     backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid var(--line); transition: box-shadow .3s ease, background .3s ease;
 }
@@ -193,7 +196,7 @@ button { font-family: inherit; cursor: pointer; }
         url("../images/medical-bg.jpg") center/cover no-repeat var(--ink);
 }
 .hero::after {
-    content: ""; position: absolute; inset: auto -10% -45% auto; width: 640px; height: 640px; border-radius: 50%;
+    content: ""; position: absolute; top: auto; right: -10%; bottom: -45%; left: auto; width: 640px; height: 640px; border-radius: 50%;
     background: radial-gradient(circle, rgba(195,170,82,.30), transparent 66%); pointer-events: none;
 }
 .hero-grid {
@@ -264,7 +267,7 @@ button { font-family: inherit; cursor: pointer; }
 .about-media { position: relative; }
 .about-media img { border-radius: var(--r-lg); box-shadow: var(--shadow-lg); width: 100%; object-fit: cover; }
 .about-media::before {
-    content: ""; position: absolute; inset: -18px -18px auto auto; width: 62%; height: 62%;
+    content: ""; position: absolute; top: -18px; right: -18px; bottom: auto; left: auto; width: 62%; height: 62%;
     border: 2px solid var(--gold); border-radius: var(--r-lg); z-index: -1;
 }
 .about-badge {
@@ -289,11 +292,11 @@ button { font-family: inherit; cursor: pointer; }
 .svc-card:hover { transform: translateY(-7px); box-shadow: var(--shadow-lg); border-color: transparent; }
 /* .svc-media stays unclipped so the gold icon can overhang; .svc-img does the clipping */
 .svc-media { position: relative; aspect-ratio: 16 / 10; background: var(--ink); }
-.svc-img { position: absolute; inset: 0; overflow: hidden; border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.svc-img { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; border-radius: var(--r-lg) var(--r-lg) 0 0; }
 .svc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
 .svc-card:hover .svc-img img { transform: scale(1.07); }
 .svc-img::after {
-    content: ""; position: absolute; inset: 0;
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
     background: linear-gradient(to top, rgba(11,23,40,.72), rgba(11,23,40,0) 58%);
 }
 .svc-tag {
@@ -371,7 +374,7 @@ button { font-family: inherit; cursor: pointer; }
 .video-card:hover img { transform: scale(1.05); filter: brightness(.72); }
 .video-card iframe { width: 100%; height: 100%; border: 0; display: block; }
 .play-btn {
-    position: absolute; inset: 0; margin: auto; width: 74px; height: 74px; border-radius: 50%;
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; width: 74px; height: 74px; border-radius: 50%;
     background: rgba(255,255,255,.94); display: grid; place-items: center; box-shadow: var(--shadow-lg);
     transition: transform .3s ease, background .3s ease; pointer-events: none;
 }
@@ -427,7 +430,7 @@ button { font-family: inherit; cursor: pointer; }
    ========================================================================== */
 .appt { background: var(--ink); position: relative; overflow: hidden; }
 .appt::before {
-    content: ""; position: absolute; inset: -20% -25% auto auto; width: 620px; height: 620px; border-radius: 50%;
+    content: ""; position: absolute; top: -20%; right: -25%; bottom: auto; left: auto; width: 620px; height: 620px; border-radius: 50%;
     background: radial-gradient(circle, rgba(195,170,82,.22), transparent 68%);
 }
 .appt-grid { display: grid; grid-template-columns: 1fr .85fr; gap: 54px; align-items: start; position: relative; z-index: 2; }
@@ -516,7 +519,7 @@ button { font-family: inherit; cursor: pointer; }
     color: #fff; padding: 62px 0; text-align: center; position: relative; overflow: hidden;
 }
 .cta-band::after {
-    content: ""; position: absolute; inset: 0; opacity: .12;
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: .12;
     background: url("../images/medical-bg.jpg") center/cover no-repeat; mix-blend-mode: overlay;
 }
 .cta-band .container { position: relative; z-index: 2; }
@@ -569,7 +572,7 @@ button { font-family: inherit; cursor: pointer; }
 .float-btn--top.show { opacity: 1; visibility: visible; }
 .float-btn--top svg { width: 18px; height: 18px; }
 .float-btn--wa::after {
-    content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--green);
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-radius: 50%; border: 2px solid var(--green);
     animation: pulse 2.2s ease-out infinite;
 }
 @keyframes pulse { 0% { transform: scale(1); opacity: .75; } 100% { transform: scale(1.65); opacity: 0; } }
@@ -658,7 +661,7 @@ button { font-family: inherit; cursor: pointer; }
 
 @media (max-width: 900px) {
     .nav {
-        position: fixed; inset: 0 0 0 auto; width: min(330px, 84vw); background: #fff; flex-direction: column;
+        position: fixed; top: 0; right: 0; bottom: 0; left: auto; width: min(330px, 84vw); background: #fff; flex-direction: column;
         align-items: stretch; padding: 92px 22px 30px; gap: 2px; box-shadow: var(--shadow-lg);
         transform: translateX(102%); visibility: hidden;
         transition: transform .34s cubic-bezier(.22,1,.36,1), visibility .34s;
@@ -673,7 +676,7 @@ button { font-family: inherit; cursor: pointer; }
     .header-cta .btn { display: none; }
     .header-cta .btn--wa-head { display: inline-flex; }
     .nav-backdrop {
-        position: fixed; inset: 0; background: rgba(11,23,40,.45); z-index: 940; opacity: 0; visibility: hidden;
+        position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(11,23,40,.45); z-index: 940; opacity: 0; visibility: hidden;
         transition: opacity .3s ease, visibility .3s;
     }
     .nav-backdrop.show { opacity: 1; visibility: visible; }
@@ -857,4 +860,22 @@ button { font-family: inherit; cursor: pointer; }
 
 @media print {
     .float-stack, .wa-panel, .mobile-bar, .site-header, .topbar { display: none !important; }
+}
+
+/* ==========================================================================
+   Older phone browsers (iOS < 15, old Android WebView) ignore `aspect-ratio`.
+   The service-card media box has only absolutely-positioned children, so
+   without it the box collapses to 0px and every card looks broken.
+   Give those boxes their height back with the padding-bottom ratio trick.
+   ========================================================================== */
+@supports not (aspect-ratio: 1 / 1) {
+    .svc-media { height: 0; padding-bottom: 62.5%; }          /* 16:10 */
+    .video-card { height: 0; padding-bottom: 56.25%; }        /* 16:9  */
+    .video-card img, .video-card iframe {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;
+    }
+    .testi-grid .video-card { padding-bottom: 62.5%; }
+    @media (max-width: 620px) {
+        .svc-media { padding-bottom: 56.25%; }
+    }
 }
