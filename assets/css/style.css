@@ -660,6 +660,14 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 @media (max-width: 900px) {
+    /* backdrop-filter makes the header the containing block for position:fixed
+       descendants, which squashes the drawer to the header's 64px height.
+       The drawer only exists at this width, so trade the blur for a solid bg. */
+    .site-header {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background: #fff;
+    }
     .nav {
         position: fixed; top: 0; right: 0; bottom: 0; left: auto; width: min(330px, 84vw); background: #fff; flex-direction: column;
         align-items: stretch; padding: 92px 22px 30px; gap: 2px; box-shadow: var(--shadow-lg);
