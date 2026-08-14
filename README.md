@@ -28,6 +28,28 @@ Shoulder & Elbow Replacement · Arthroscopic Sports Injury (ACL / meniscus) ·
 Scoliosis & Spine · Paediatric Orthopaedics · Advanced Trauma Reconstruction ·
 Cartilage Preservation & Biologics · Second Opinion
 
+## Mobile
+
+The phone layout is a rebuild, not a reflow (see the `max-width: 700px` / `620px`
+blocks in `style.css`):
+
+- **Services (12 cards)** and **Patient Stories** become horizontal swipe rails
+  with CSS scroll-snap and a "Swipe to see more" cue. This alone removed ~6,700px.
+- **Why Choose Us**, **Assurance strip**, **testimonial videos** and the
+  **footer links** go two-up instead of stacking.
+- Section padding, headings, card padding and the hero figure are all reduced.
+- The off-canvas nav drawer is `visibility: hidden` when closed, and
+  `html/body` use `overflow-x: clip`, which is what removed the sideways scroll.
+
+Measured with Chrome device emulation at 390 × 844:
+
+| | before | after |
+|---|---|---|
+| page height | 25,407px | **13,142px** |
+| horizontal scroll | 724px (side-scrolled) | **none** (390 = viewport) |
+
+No horizontal scroll at 320 / 360 / 390 / 414 / 540 / 768 / 1024px.
+
 ## Google Ads safety
 
 There are **no links to any other website**. Every navigation link is an in-page

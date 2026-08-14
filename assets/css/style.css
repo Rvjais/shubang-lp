@@ -40,7 +40,14 @@
 
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 110px; }
+html {
+    -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 110px;
+    /* the off-canvas nav is translated past the right edge; `clip` stops that from
+       creating a sideways scroll without turning the root into a scroll container
+       (which `hidden` would, breaking position:sticky on the header in Safari) */
+    overflow-x: hidden;
+    overflow-x: clip;
+}
 body {
     margin: 0;
     font-family: var(--font-body);
@@ -49,6 +56,7 @@ body {
     color: var(--text);
     background: var(--white);
     overflow-x: hidden;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
 }
 img { max-width: 100%; display: block; border: 0; }
@@ -652,9 +660,11 @@ button { font-family: inherit; cursor: pointer; }
     .nav {
         position: fixed; inset: 0 0 0 auto; width: min(330px, 84vw); background: #fff; flex-direction: column;
         align-items: stretch; padding: 92px 22px 30px; gap: 2px; box-shadow: var(--shadow-lg);
-        transform: translateX(102%); transition: transform .34s cubic-bezier(.22,1,.36,1); overflow-y: auto; z-index: 950;
+        transform: translateX(102%); visibility: hidden;
+        transition: transform .34s cubic-bezier(.22,1,.36,1), visibility .34s;
+        overflow-y: auto; z-index: 950;
     }
-    .nav.open { transform: none; }
+    .nav.open { transform: none; visibility: visible; }
     /* restore every link once the drawer takes over */
     .nav a[href^="#"] { display: block; }
     .nav a { padding: 13px 12px; border-bottom: 1px solid var(--line); border-radius: 0; font-size: .96rem; }
@@ -681,27 +691,162 @@ button { font-family: inherit; cursor: pointer; }
     body { padding-bottom: 62px; }
 }
 
+/* ==========================================================================
+   PHONES — the page is rebuilt here, not just reflowed.
+
+   Stacking 12 service cards, 6 reason cards and 3 quote cards one under the
+   other produced a ~25,000px scroll on a 390px screen. On phones the long
+   grids become swipeable rails and the remaining grids go two-up, which cuts
+   the page to roughly a third of that.
+   ========================================================================== */
+@media (max-width: 700px) {
+    /* --- swipeable rails: services & patient stories --- */
+    .svc-grid, .quote-grid {
+        display: flex; grid-template-columns: none; gap: 14px;
+        overflow-x: auto; overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        /* bleed to the screen edges so a card can peek in from the right */
+        margin: 0 -16px; padding: 4px 16px 16px;
+        scrollbar-width: none;
+    }
+    .svc-grid::-webkit-scrollbar, .quote-grid::-webkit-scrollbar { display: none; }
+    .svc-card, .quote-card { flex: 0 0 80%; max-width: 320px; scroll-snap-align: center; }
+    .quote-card { padding: 26px 22px; }
+    /* inside a horizontal rail the scroll-reveal can't be trusted — show them */
+    .svc-grid .reveal, .quote-grid .reveal { opacity: 1; transform: none; }
+
+    .swipe-hint { display: flex; }
+}
+
 @media (max-width: 620px) {
-    :root { --header-h: 66px; }
+    :root { --header-h: 64px; }
     body { font-size: 15.5px; }
+    .container { padding: 0 16px; }
     .topbar { display: none; }
-    .svc-grid, .why-grid, .quote-grid, .testi-grid, .assurance-grid, .field-row { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; gap: 32px; }
-    .footer-bottom { justify-content: center; text-align: center; }
-    .hero-chip { display: none; }
-    .marquee-track figure { flex: 0 0 250px; }
-    .marquee-track img { width: 250px; height: 190px; }
-    .form-card { padding: 26px 20px; }
-    .feature-split .fs-body { padding: 34px 22px; }
-    .about-badge { left: 0; bottom: -18px; padding: 14px 18px; }
-    .hero-actions .btn { width: 100%; }
-    .logo-mark { width: 38px; height: 38px; flex-basis: 38px; }
+
+    /* --- rhythm: sections were eating ~130px of empty space each --- */
+    .section { padding: 44px 0; }
+    .section--tight { padding: 36px 0; }
+    .section-head { margin-bottom: 28px; }
+    h1 { font-size: 1.95rem; }
+    h2 { font-size: 1.55rem; }
+    .section-head p { font-size: .95rem; }
+
+    /* --- header --- */
+    .logo-mark { width: 36px; height: 36px; flex-basis: 36px; }
     .logo { gap: 9px; }
-    .logo-name { font-size: .97rem; }
-    .logo-sub { font-size: .55rem; letter-spacing: .13em; }
+    .logo-name { font-size: .95rem; }
+    .logo-sub { font-size: .54rem; letter-spacing: .12em; }
     /* WhatsApp lives in the sticky bottom bar and the floating widget on phones */
     .header-cta .btn--wa-head { display: none; }
-    .container { padding: 0 16px; }
+
+    /* --- hero: shorter figure, tighter stack --- */
+    .hero-grid { padding-top: 34px; gap: 22px; }
+    .hero-badge { font-size: .7rem; margin-bottom: 16px; padding: 6px 13px 6px 6px; }
+    .hero-lead { font-size: .98rem; margin-bottom: 20px; }
+    .hero-actions { gap: 10px; margin-bottom: 20px; }
+    .hero-actions .btn { width: 100%; }
+    .hero-motto { padding-top: 16px; font-size: .8rem; gap: 6px 14px; justify-content: center; }
+    .hero-chip { display: none; }
+    .hero-figure { max-width: 260px; }
+    .hero-figure img { max-height: 300px; }
+    .hero-stats { margin-top: 26px; }
+    .hero-stats .stat { padding: 16px 10px; }
+    .stat-label { font-size: .72rem; margin-top: 4px; }
+
+    /* --- assurance: 2-up chips instead of 4 stacked rows --- */
+    .assurance { padding: 20px 0; }
+    .assurance-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .assurance-item { font-size: .76rem; gap: 8px; line-height: 1.35; }
+    .assurance-item svg { width: 28px; height: 28px; padding: 6px; }
+
+    /* --- about --- */
+    .about-grid { gap: 34px; }
+    .about-media img { aspect-ratio: 4 / 3; object-position: top center; }
+    .about-badge { left: 0; bottom: -16px; padding: 12px 16px; }
+    .about-badge strong { font-size: 1.5rem; }
+    .cred-list { gap: 11px; margin: 20px 0 24px; }
+    .cred-list li { font-size: .9rem; }
+
+    /* --- service cards: trimmed so a whole card fits one screen --- */
+    .svc-media { aspect-ratio: 16 / 9; }
+    .svc-body { padding: 20px 18px; }
+    .svc-body h3 { font-size: 1.06rem; }
+    .svc-body > p { font-size: .87rem; margin-bottom: 12px; }
+    .svc-points { gap: 6px; margin-bottom: 16px; }
+    .svc-points li { font-size: .82rem; }
+    .svc-icon { width: 42px; height: 42px; bottom: -18px; right: 16px; }
+    .svc-icon svg { width: 20px; height: 20px; }
+
+    /* --- robotic split --- */
+    .feature-split .fs-media { min-height: 200px; }
+    .feature-split .fs-body { padding: 30px 20px; }
+    .fs-steps { gap: 14px; margin-top: 20px; }
+    .fs-step i { flex-basis: 32px; width: 32px; height: 32px; font-size: .8rem; }
+    .fs-step p { font-size: .85rem; }
+
+    /* --- why choose us: 2-up compact tiles --- */
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .why-card { padding: 18px 14px; }
+    .why-icon { width: 42px; height: 42px; margin-bottom: 12px; border-radius: 10px; }
+    .why-icon svg { width: 20px; height: 20px; }
+    .why-card h3 { font-size: .95rem; margin-bottom: 6px; }
+    .why-card p { font-size: .8rem; line-height: 1.5; }
+
+    /* --- videos: testimonials stay 2-up --- */
+    .video-grid { gap: 14px; }
+    .testi-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
+    .testi-grid .play-btn { width: 42px; height: 42px; }
+    .testi-grid .play-btn svg { width: 15px; height: 15px; }
+    .video-caption { font-size: .82rem; padding: 34px 14px 12px; }
+
+    /* --- gallery --- */
+    .marquee-track figure { flex: 0 0 230px; }
+    .marquee-track img { width: 230px; height: 165px; }
+    .marquee::before, .marquee::after { width: 48px; }
+
+    /* --- appointment --- */
+    .appt-grid { gap: 30px; }
+    .form-card { padding: 24px 18px; }
+    .field-row { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .contact-list { gap: 14px; margin-top: 22px; }
+    .contact-item .ci-icon { width: 40px; height: 40px; flex-basis: 40px; }
+    .map-wrap iframe { height: 280px; }
+
+    /* --- faq / locations --- */
+    .faq-q { font-size: .92rem; padding: 15px 46px 15px 16px; }
+    .faq-q::after { right: 18px; }
+    .faq-a p { padding: 0 16px 16px; font-size: .87rem; }
+    .loc-cloud { gap: 7px; }
+    .loc-cloud span { padding: 6px 13px; font-size: .78rem; }
+
+    /* --- cta band + footer --- */
+    .cta-band { padding: 40px 0; }
+    .cta-actions .btn { width: 100%; }
+    .footer { padding: 44px 0 0; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 26px 20px; padding-bottom: 30px; }
+    .footer-about { grid-column: 1 / -1; }
+    .footer h4 { margin-bottom: 14px; font-size: .74rem; }
+    .footer-links { gap: 8px; }
+    .footer-links a, .footer-links li { font-size: .82rem; }
+    .footer-bottom { justify-content: center; text-align: center; font-size: .76rem; }
+}
+
+/* Swipe affordance — only meaningful once the grids become rails */
+.swipe-hint {
+    display: none; align-items: center; justify-content: center; gap: 8px;
+    font-size: .78rem; font-weight: 600; color: var(--gold); letter-spacing: .04em;
+    margin: -6px 0 14px;
+}
+.swipe-hint svg { width: 15px; height: 15px; animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+/* must come after the base rule above to win on equal specificity */
+@media (max-width: 700px) { .swipe-hint { display: flex; } }
+
+@media (max-width: 400px) {
+    .svc-card, .quote-card { flex-basis: 86%; }
+    .why-card p { font-size: .77rem; }
+    .assurance-item { font-size: .72rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
