@@ -280,6 +280,14 @@
                     submitBtn.classList.remove('is-busy');
                     submitBtn.innerHTML = originalLabel;
                 }
+                if (sent && typeof gtag === 'function') {
+                    /* Google Ads — "Submit lead form" conversion (#appointment) */
+                    gtag('event', 'conversion', {
+                        'send_to': 'AW-745482771/VNIQCKiizuEcEJPUvOMC',
+                        'value': 1.0,
+                        'currency': 'INR'
+                    });
+                }
                 var box = sent ? success : failure;
                 if (sent && success) { success.classList.add('show'); }
                 if (!sent && failure) { failure.classList.add('show'); }
