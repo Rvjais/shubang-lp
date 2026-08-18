@@ -241,8 +241,6 @@
         }
 
         form.addEventListener('submit', function (e) {
-            e.preventDefault();
-
             var name = $('#f-name', form);
             var city = $('#f-city', form);
             var tel = $('#f-mobile', form);
@@ -253,57 +251,28 @@
             ok = setError(tel, !/^[6-9][0-9]{9}$/.test(tel.value.trim())) && ok;
 
             if (!ok) {
+                e.preventDefault();
                 var firstBad = $('.field.has-error input', form);
                 if (firstBad) { firstBad.focus(); }
                 return;
             }
 
-            var payload = {
-                name: name.value.trim(),
-                city: city.value.trim(),
-                mobile: tel.value.trim(),
-                service: $('#f-service', form).value || 'General orthopaedic consultation',
-                message: $('#f-msg', form).value.trim(),
-                page: 'Landing page — Dr. Shubhang Aggarwal'
-            };
-
             var submitBtn = $('button[type="submit"]', form);
-            var originalLabel = submitBtn ? submitBtn.innerHTML : '';
             if (submitBtn) {
                 submitBtn.classList.add('is-busy');
                 submitBtn.textContent = 'Sending…';
             }
             if (failure) { failure.classList.remove('show'); }
-
-            function finish(sent) {
-                if (submitBtn) {
-                    submitBtn.classList.remove('is-busy');
-                    submitBtn.innerHTML = originalLabel;
-                }
-                if (sent && typeof gtag === 'function') {
-                    /* Google Ads — "Submit lead form" conversion (#appointment) */
-                    gtag('event', 'conversion', {
-                        'send_to': 'AW-745482771/VNIQCKiizuEcEJPUvOMC',
-                        'value': 1.0,
-                        'currency': 'INR'
-                    });
-                }
-                var box = sent ? success : failure;
-                if (sent && success) { success.classList.add('show'); }
-                if (!sent && failure) { failure.classList.add('show'); }
-                if (box) { box.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-                if (sent) { form.reset(); }
+            
+            if (typeof gtag === 'function') {
+                /* Google Ads — "Submit lead form" conversion (#appointment) */
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-745482771/VNIQCKiizuEcEJPUvOMC',
+                    'value': 1.0,
+                    'currency': 'INR'
+                });
             }
-
-            fetch(FORMESTER_ENDPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(function (res) {
-                finish(res.ok);
-            }).catch(function () {
-                finish(false);
-            });
+            // Form will now submit natively to the action attribute
         });
     }
 
